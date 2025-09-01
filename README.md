@@ -1,4 +1,4 @@
-# Plano de Projeto: SaaS de Controle de Despesas Pessoais v3.1
+# Plano de Projeto: SaaS de Controle de Despesas Pessoais v3.2
 
 **Data da Última Revisão:** 1 de Setembro de 2025
 **Status:** Visão Estratégica Aprovada
@@ -100,7 +100,7 @@ C4Container
   UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
 ```
 
-### Nível 3: Diagrama de Componentes do Backend
+### Nível 3: Diagrama de Componentes do Backend (CORRIGIDO)
 
 *Detalha a estrutura interna da API Backend e seus principais módulos.*
 
@@ -133,17 +133,28 @@ C4Component
   }
 
   %% Relacionamentos
+  %% Fluxo de entrada
   Rel(frontend, routers, "Faz chamadas de API")
   Rel(routers, auth_component, "Verifica autenticação")
+
+  %% Direcionamento dos Routers para os Serviços
   Rel(routers, expense_service, "Direciona requisições de despesas")
   Rel(routers, subscription_service, "Direciona requisições de assinaturas")
   Rel(routers, admin_service, "Direciona requisições de admin")
+
+  %% Interação dos Serviços
   Rel(expense_service, orm, "Usa para persistir dados")
   Rel(admin_service, orm, "Usa para ler dados")
   Rel(subscription_service, orm, "Usa para atualizar assinaturas")
-  Rel(auth_component, o rm, "Usa para verificar usuários")
+  Rel(auth_component, orm, "Usa para verificar usuários")
   Rel(orm, db, "Lê e Escreve")
 
+  %% Comunicação com Gateways Externos
+  Rel(subscription_service, stripe_gateway, "Usa para interagir com o Stripe")
+  Rel(stripe_gateway, stripe, "Faz chamadas à API do Stripe", "API/HTTPS")
+  Rel(admin_service, email_gateway, "Usa para enviar e-mails")
+  Rel(email_gateway, email_service, "Faz chamadas à API de E-mail", "API/HTTPS")
+  
   %% Fluxo do Webhook do WhatsApp
   Rel(whatsapp, routers, "Envia Webhook de Mensagem")
   Rel(routers, ai_ingestion_service, "Direciona o webhook")
