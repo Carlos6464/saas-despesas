@@ -100,7 +100,7 @@ C4Container
   UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
 ```
 
-### Nível 3: Diagrama de Componentes do Backend (CORRIGIDO)
+### Nível 3: Diagrama de Componentes do Backend
 
 *Detalha a estrutura interna da API Backend e seus principais módulos.*
 
