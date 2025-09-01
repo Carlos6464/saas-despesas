@@ -1,7 +1,7 @@
-# Plano de Projeto: SaaS de Controle de Despesas Pessoais v3.2
+# Plano de Projeto: SaaS de Controle de Despesas Pessoais v4.0
 
 **Data da Última Revisão:** 1 de Setembro de 2025
-**Status:** Visão Estratégica Aprovada
+**Status:** Visão Estratégica e de Longo Prazo Aprovada
 
 ## Sumário Executivo
 
@@ -9,27 +9,27 @@ Este documento detalha o plano de desenvolvimento para um software como serviço
 
 O sistema será composto por duas áreas principais:
 1.  **Área do Cliente:** Focada no registro intuitivo de despesas.
-2.  **Área Administrativa:** Para a gestão completa da plataforma, clientes e pagamentos.
+2.  **Área Administrativa:** Para a gestão completa da plataforma.
 
-O modelo de negócio será de assinatura mensal, validado desde o MVP com um período de teste de 14 dias. A visão de longo prazo inclui um **plano premium com um Agente de IA**, que permitirá o registro de despesas via WhatsApp.
+O modelo de negócio será de assinatura mensal, validado desde o MVP. A visão de longo prazo é criar um verdadeiro assistente financeiro pessoal através da introdução de múltiplos **agentes de Inteligência Artificial**, que automatizam e geram insights sobre as finanças do usuário, justificando um ecossistema de planos com diferentes níveis de valor.
 
 - **Stack Tecnológica:** FastAPI (Python), Angular, PrimeNG/TailwindCSS, PostgreSQL, Docker.
 - **Infraestrutura:** Vercel (Frontend) e Render (Backend/DB).
-- **Tecnologias Futuras:** WhatsApp Business API, Modelos de NLP/LLM (ex: OpenAI API, Gemini API).
+- **Tecnologias Futuras:** WhatsApp Business API, Modelos de NLP/LLM (ex: OpenAI API, Gemini API), Serviços de OCR.
 
 ---
 
 ## 1. Estratégia e Filosofia de Desenvolvimento
 
-- **MVP Comercial:** O foco do Mínimo Produto Viável é validar o produto e o modelo de negócio simultaneamente.
-- **Controle de Acesso Baseado em Função (RBAC):** A arquitetura será construída sobre uma clara separação entre as funções de "Cliente" e "Administrador".
-- **Desenvolvimento Ágil e Segurança por Padrão:** Ciclos curtos de desenvolvimento e segurança como pilar inegociável do projeto.
+- **MVP Comercial:** Validar o produto e o modelo de negócio simultaneamente.
+- **Controle de Acesso Baseado em Função (RBAC):** Arquitetura com clara separação entre "Cliente" e "Administrador".
+- **Desenvolvimento Ágil e Segurança por Padrão:** Ciclos curtos de desenvolvimento e segurança como pilar inegociável.
 
 ---
 
 ## 2. Arquitetura da Solução (Modelo C4)
 
-A arquitetura é documentada em três níveis de abstração para garantir clareza.
+A arquitetura já contempla a futura integração com múltiplos serviços de IA.
 
 ### Nível 1: Diagrama de Contexto do Sistema
 
@@ -37,7 +37,7 @@ A arquitetura é documentada em três níveis de abstração para garantir clare
 
 ```mermaid
 C4Context
-  title Diagrama de Contexto v3 - SaaS com Agente IA
+  title Diagrama de Contexto v4 - SaaS com Múltiplos Agentes IA
 
   Person(cliente, "Cliente", "Pessoa que paga para controlar suas despesas pessoais.")
   Person(admin, "Administrador", "Funcionário que gerencia a plataforma.")
@@ -72,7 +72,7 @@ C4Context
 
 ```mermaid
 C4Container
-  title Diagrama de Contêineres v3 - SaaS com Agente IA
+  title Diagrama de Contêineres v4 - SaaS com Múltiplos Agentes IA
   
   Person(usuario, "Usuário (Cliente/Admin)", "Pessoa que interage com o sistema.")
 
@@ -102,11 +102,11 @@ C4Container
 
 ### Nível 3: Diagrama de Componentes do Backend
 
-*Detalha a estrutura interna da API Backend e seus principais módulos.*
+*Detalha a estrutura interna da API Backend, preparada para os múltiplos agentes de IA.*
 
 ```mermaid
 C4Component
-  title Diagrama de Componentes v3 - API Backend com Agente IA
+  title Diagrama de Componentes v4 - API Backend com Múltiplos Agentes IA
 
   %% Sistemas Externos
   Container(frontend, "Frontend")
@@ -133,28 +133,17 @@ C4Component
   }
 
   %% Relacionamentos
-  %% Fluxo de entrada
   Rel(frontend, routers, "Faz chamadas de API")
   Rel(routers, auth_component, "Verifica autenticação")
-
-  %% Direcionamento dos Routers para os Serviços
   Rel(routers, expense_service, "Direciona requisições de despesas")
   Rel(routers, subscription_service, "Direciona requisições de assinaturas")
   Rel(routers, admin_service, "Direciona requisições de admin")
-
-  %% Interação dos Serviços
   Rel(expense_service, orm, "Usa para persistir dados")
   Rel(admin_service, orm, "Usa para ler dados")
   Rel(subscription_service, orm, "Usa para atualizar assinaturas")
   Rel(auth_component, orm, "Usa para verificar usuários")
   Rel(orm, db, "Lê e Escreve")
 
-  %% Comunicação com Gateways Externos
-  Rel(subscription_service, stripe_gateway, "Usa para interagir com o Stripe")
-  Rel(stripe_gateway, stripe, "Faz chamadas à API do Stripe", "API/HTTPS")
-  Rel(admin_service, email_gateway, "Usa para enviar e-mails")
-  Rel(email_gateway, email_service, "Faz chamadas à API de E-mail", "API/HTTPS")
-  
   %% Fluxo do Webhook do WhatsApp
   Rel(whatsapp, routers, "Envia Webhook de Mensagem")
   Rel(routers, ai_ingestion_service, "Direciona o webhook")
@@ -171,51 +160,69 @@ A persistência dos dados será feita em um banco de dados relacional (PostgreSQ
 
 -   **Usuário (User):** Armazena informações de login, perfil, **função (role)** (Cliente/Admin), status da assinatura e o número de WhatsApp associado (para o plano IA).
 -   **Despesa (Expense):** Contém os detalhes de cada transação (valor, descrição, data). Associada a um usuário e a uma categoria.
--   **Categoria (Category):** Define as categorias de gastos. Se a associação com o usuário for nula (`user_id = NULL`), a categoria é considerada **Global** e disponível para todos. Caso contrário, é uma categoria pessoal.
+-   **Categoria (Category):** Define as categorias de gastos. Se a associação com o usuário for nula (`user_id = NULL`), a categoria é considerada **Global**. Caso contrário, é uma categoria pessoal.
 
 *Nota: O schema detalhado do banco de dados será mantido em um documento técnico separado.*
 
 ---
 
-## 4. Roadmap de Desenvolvimento
+## 4. Modelo de Planos e Monetização
 
-### Fase 0: Fundação (Duração: ~1 Semana)
+A estratégia de monetização evoluirá com o produto, oferecendo diferentes níveis de valor.
+
+- **Plano Básico (Pago):**
+  - Acesso a todas as funcionalidades manuais do aplicativo (CRUD de despesas, relatórios, etc.).
+  - Inclui o **Agente "Categorizador Inteligente"** como um diferencial para acelerar o registro manual.
+
+- **Plano IA / Premium (Pago, valor superior):**
+  - Todos os benefícios do Plano Básico.
+  - Acesso ao ecossistema de agentes de IA:
+    - Registro de Despesas via **WhatsApp**.
+    - **Detetive de Insights** (notificações proativas).
+    - **Caçador de Assinaturas** (identificação de gastos recorrentes).
+    - **Scanner de Recibos** (OCR de notas fiscais).
+
+---
+
+## 5. Roadmap de Desenvolvimento
+
+### CICLO 1: FUNDAÇÃO E LANÇAMENTO COMERCIAL
+
+#### Fase 0: Fundação (Duração: ~1 Semana)
 -   **Objetivo:** Preparar todo o ambiente de desenvolvimento e infraestrutura.
--   **Tarefas:** Criar repositório Git; Iniciar projetos Angular e FastAPI; Configurar Docker e CI/CD básico; Criar contas nos serviços de nuvem.
 
-### Fase 1: MVP - Lançamento Comercial (Duração: 3-4 Meses)
+#### Fase 1: MVP - Lançamento Comercial (Duração: 3-4 Meses)
 -   **Objetivo:** Lançar a primeira versão pública, funcional e capaz de gerar receita.
--   **Módulo do Cliente:**
-    -   [ ] Autenticação (Cadastro, Login, Logout).
-    -   [ ] CRUD de categorias pessoais.
-    -   [ ] CRUD de despesas.
-    -   [ ] Dashboard com total de gastos do mês.
--   **Módulo de Assinaturas:**
-    -   [ ] Integração completa com Stripe (Checkout e Webhooks).
-    -   [ ] Lógica de trial de 14 dias.
-    -   [ ] Acesso ao Portal do Cliente Stripe para autogestão.
--   **Módulo do Administrador:**
-    -   [ ] Autenticação segura baseada em `role`.
-    -   [ ] Dashboard com métricas chave.
-    -   [ ] Visualização de lista de clientes e status.
-    -   [ ] CRUD de categorias globais.
+-   **Módulos:** Cliente (CRUDs), Assinaturas (Stripe) e Administrador (Gestão).
 
-### Fase 2: Primeiras Melhorias (Pós-Lançamento) (Duração: ~2 Meses)
+#### Fase 2: Primeiras Melhorias (Pós-Lançamento) (Duração: ~2 Meses)
 -   **Objetivo:** Adicionar funcionalidades de alto valor com base no feedback inicial.
--   **Tarefas:** Melhorias no Dashboard do Cliente (gráficos); Cadastro de Despesas Recorrentes; Filtros e Busca de despesas; Fluxo de Recuperação de Senha; Melhorias no Painel Admin.
+-   **Tarefas:** Gráficos, Despesas Recorrentes, Filtros/Busca, Recuperação de Senha.
 
-### Fase 3: Amadurecimento do Produto (Duração: ~3 Meses)
+#### Fase 3: Amadurecimento do Produto (Duração: ~3 Meses)
 -   **Objetivo:** Aumentar a retenção de usuários com funcionalidades avançadas.
--   **Tarefas:** Metas de Orçamento; Relatórios (PDF/CSV); Múltiplas "Carteiras"; Tema Escuro (Dark Mode).
+-   **Tarefas:** Metas de Orçamento, Relatórios (PDF/CSV), Múltiplas "Carteiras", Tema Escuro.
 
-### Fase 4: Inovação com IA (Segundo Ciclo de Desenvolvimento)
--   **Objetivo:** Introduzir um diferencial competitivo único e justificar um novo plano de assinatura de maior valor.
--   **Modelo de Negócio:**
-    -   [ ] Criar um novo plano de assinatura ("Plano IA") com preço superior.
-    -   [ ] Atualizar a UI para refletir os diferentes planos.
--   **Checklist de Features:**
+---
+
+### CICLO 2: EXPANSÃO COM INTELIGÊNCIA ARTIFICIAL
+
+#### Fase 4: Inovação com IA e Conveniência (Desenvolvimento Contínuo)
+-   **Objetivo:** Introduzir um diferencial competitivo único, justificar o plano de assinatura premium e aumentar drasticamente a conveniência para o usuário.
+-   **Módulo 4.1: Registro via WhatsApp:**
+    -   [ ] Criar o **Plano IA / Premium** no sistema e no Stripe.
     -   [ ] Implementar fluxo de configuração e validação do número de WhatsApp do cliente.
     -   [ ] Desenvolver o serviço de backend para receber webhooks do WhatsApp.
     -   [ ] Integrar com um serviço de LLM para processar o texto das mensagens.
     -   [ ] Implementar a lógica para salvar a despesa extraída na conta do usuário correto.
     -   [ ] Implementar mensagens de confirmação de volta para o usuário via WhatsApp.
+-   **Módulo 4.2: Categorização Inteligente (Melhoria do Plano Básico):**
+    -   [ ] Implementar a sugestão automática de categorias com base na descrição da despesa no formulário principal.
+-   **Módulo 4.3: Detetive de Insights e Caçador de Assinaturas (Plano IA):**
+    -   [ ] Desenvolver rotinas de análise de dados que rodam em segundo plano.
+    -   [ ] Implementar a lógica para detectar anomalias, tendências e pagamentos recorrentes.
+    -   [ ] Criar um sistema de notificações para apresentar esses insights aos usuários premium.
+-   **Módulo 4.4: Scanner de Recibos (Plano IA):**
+    -   [ ] Integrar um serviço de OCR.
+    -   [ ] Desenvolver a funcionalidade na interface para que o usuário possa tirar uma foto do recibo.
+    -   [ ] Implementar a lógica para extrair os dados e preencher o formulário de despesa.
