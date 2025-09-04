@@ -1,0 +1,11 @@
+<header class="p-4 bg-surface-card text-text-color flex justify-between items-center">
+  <h1 class="text-xl font-bold text-primary">Meu Projeto</h1>
+
+  @if(isDarkMode){
+     <p-button icon="pi pi-sun" (onClick)="toggleDarkMode()" />
+  }
+  @else {
+     <p-button icon="pi pi-moon" (onClick)="toggleDarkMode()" />
+  }
+
+</header>
