@@ -2,7 +2,8 @@
 from fastapi import FastAPI
 from app.db.base import Base
 from app.db.database import engine
-from app.api.v1 import user_router, auth_router, category_router, admin_router
+from app.api.v1 import user_router, auth_router, category_router, admin_router, expense_router
+
 
 
 
@@ -24,4 +25,5 @@ app.include_router(admin_router.router, prefix="/api/v1")
 app.include_router(auth_router.router, prefix="/api/v1")
 app.include_router(user_router.router, prefix="/api/v1")
 app.include_router(category_router.router, prefix="/api/v1")
+app.include_router(expense_router.router, prefix="/api/v1")
 

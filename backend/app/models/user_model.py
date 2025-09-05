@@ -19,3 +19,4 @@ class User(Base):
 
     # Adicione este relacionamento reverso
     categories = relationship("Category", back_populates="owner")
+    expenses = relationship("Expense", back_populates="owner")

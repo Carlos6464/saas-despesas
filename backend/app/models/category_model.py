@@ -22,4 +22,5 @@ class Category(Base):
 
     # Relacionamento para acessar o objeto User a partir de uma Category
     owner = relationship("User")
+    expenses = relationship("Expense", back_populates="category")
 
