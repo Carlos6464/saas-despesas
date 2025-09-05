@@ -10,6 +10,7 @@ from app.schemas.token_schema import TokenData
 from app.db.database import get_db
 from sqlalchemy.orm import Session
 from app.repositories.user_repository import UserRepository
+from app.models.user_model import User
 
 # ------------------- Configuração de Senhas -------------------
 
@@ -66,3 +67,15 @@ def get_current_user(
     if user is None:
         raise credentials_exception
     return user
+
+def get_current_admin_user(current_user: User = Depends(get_current_user)) -> User:
+    """
+    Reutiliza a dependência get_current_user e depois verifica o status de admin.
+    Se o usuário não for admin, lança um erro HTTP 403 Forbidden.
+    """
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Acesso negado. Esta área é restrita para administradores."
+        )
+    return current_user
