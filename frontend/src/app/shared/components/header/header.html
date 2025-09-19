@@ -1,11 +1,41 @@
-<header class="p-4 bg-surface-card text-text-color flex justify-between items-center">
-  <h1 class="text-xl font-bold text-primary">Meu Projeto</h1>
+<header class="p-4 flex justify-between items-center">
+  <h1 class="text-xl font-bold text-primary">Despesas</h1>
 
-  @if(isDarkMode){
-     <p-button icon="pi pi-sun" (onClick)="toggleDarkMode()" />
-  }
-  @else {
-     <p-button icon="pi pi-moon" (onClick)="toggleDarkMode()" />
-  }
+  <div class="flex items-center gap-4">
+    <p-avatar
+      icon="pi pi-user"
+      styleClass="cursor-pointer"
+      shape="circle"
+      (click)="op.toggle($event)"
+    >
+    </p-avatar>
 
+    <p-popover #op>
+      <ul class="list-none p-0 m-0 flex flex-col gap-2 w-48">
+        <li>
+          <a
+            [routerLink]="['/app/perfil']"
+            pRipple
+            class="flex items-center rounded-md transition-colors duration-200 hover:bg-surface-hover"
+          >
+            <i class="pi pi-user mr-2"></i>
+            <span class="font-medium">Perfil</span>
+          </a>
+        </li>
+        <li>
+          <hr class="border-gray-200 dark:border-gray-800" />
+        </li>
+        <li>
+          <a
+            (click)="logout()"
+            pRipple
+            class="flex items-center rounded-md transition-colors duration-200 hover:bg-surface-hover cursor-pointer"
+          >
+            <i class="pi pi-sign-out mr-2"></i>
+            <span class="font-medium">Sair</span>
+          </a>
+        </li>
+      </ul>
+    </p-popover>
+  </div>
 </header>

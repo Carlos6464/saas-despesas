@@ -1,0 +1,99 @@
+/* Importações essenciais */
+@import "tailwindcss";
+@import "primeicons/primeicons.css";
+
+/* --- CONFIGURAÇÃO DE CORES --- */
+
+/* 1. MODO CLARO (padrão) */
+:root {
+  /* Cores primárias sincronizadas com as variáveis do tema PrimeNG */
+  --color-primary-50: var(--p-primary-50);
+  --color-primary-100: var(--p-primary-100);
+  --color-primary-200: var(--p-primary-200);
+  --color-primary-300: var(--p-primary-300);
+  --color-primary-400: var(--p-primary-400);
+  --color-primary-500: var(--p-primary-500);
+  --color-primary-600: var(--p-primary-600);
+  --color-primary-700: var(--p-primary-700);
+  --color-primary-800: var(--p-primary-800);
+  --color-primary-900: var(--p-primary-900);
+  --color-primary-950: var(--p-primary-950);
+
+  /* Cores de texto para o layout, também baseadas no PrimeNG */
+  --color-text-primary: var(--p-text-color);
+  --color-text-secondary: var(--p-text-secondary-color);
+
+  /* Cores customizadas do layout (com base no seu preset) */
+  --layout-bg: #f0f5f8;
+  --layout-bg-secondary: #ffffff;
+  --layout-border: #d1d5db;
+}
+
+/* 2. MODO ESCURO (sincronizado com PrimeNG) */
+.my-app-dark {
+  /* O tema do PrimeNG troca as variáveis --p-* automaticamente. */
+  /* Só precisamos redefinir as nossas variáveis customizadas. */
+
+  /* Cores de texto para o layout no modo escuro */
+  --color-text-primary: var(--p-text-color);
+  --color-text-secondary: var(--p-text-secondary-color);
+
+  /* Cores do layout no modo escuro (com base no seu preset) */
+  --layout-bg: #1a1a1a;
+  --layout-bg-secondary: #2c2c2c;
+  --layout-border: #4a4a4a;
+}
+
+/* 3. MAPEAMENTO PARA O TAILWIND */
+@theme {
+  --color-primary-50: var(--color-primary-50);
+  --color-primary-100: var(--color-primary-100);
+  --color-primary-200: var(--color-primary-200);
+  --color-primary-300: var(--color-primary-300);
+  --color-primary-400: var(--color-primary-400);
+  --color-primary-500: var(--color-primary-500);
+  --color-primary-600: var(--color-primary-600);
+  --color-primary-700: var(--color-primary-700);
+  --color-primary-800: var(--color-primary-800);
+  --color-primary-900: var(--color-primary-900);
+  --color-primary-950: var(--color-primary-950);
+
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+
+  --layout-bg: var(--layout-bg);
+  --layout-bg-secondary: var(--layout-bg-secondary);
+  --layout-border: var(--layout-border);
+}
+
+/* 4. CAMADAS DE ESTILO BASE */
+@layer base {
+  body {
+    background-color: var(--layout-bg);
+    color: var(--color-text-primary);
+  }
+
+  .bg-surface-card {
+    background-color: var(--layout-bg-secondary) !important;
+  }
+
+  .text-text-primary {
+    color: var(--color-text-primary) !important;
+  }
+
+  .text-text-secondary {
+    color: var(--color-text-secondary) !important;
+  }
+
+  .border {
+    border-color: var(--layout-border) !important;
+  }
+}
+
+/* 5. CAMADAS DE COMPONENTES */
+@layer components {
+  .shadow-xl\/60 {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+}

@@ -1,0 +1,16 @@
+// Importa as variáveis de tema para usar no SCSS, se necessário
+// @import 'src/styles/variables';
+
+// Sobrescreve estilos globais aqui, se necessário.
+// Exemplo: Mudar a cor da borda do input inválido
+:host ::ng-deep {
+  .ng-invalid.ng-dirty.p-inputtext {
+    border-color: #ef4444; // Um tom de vermelho
+  }
+
+  // Garante que o container do FloatLabel tenha a altura correta
+  p-floatLabel {
+    display: block;
+    margin-top: 1.5rem; // Espaçamento entre os campos
+  }
+}

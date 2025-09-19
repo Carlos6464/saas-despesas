@@ -1,20 +1,14 @@
-<div style="background-color: var(--p-muted-color);">
+<div class="flex h-screen gap-4">
+  <aside class="h-screen w-64">
+    <app-sidebar></app-sidebar>
+  </aside>
+
+  <div class="flex flex-col w-full h-screen">
     <app-header></app-header>
 
-    <div class="flex" style="height: calc(100vh - 90px);">
-       <aside class="h-200">
-         <app-sidebar></app-sidebar>
-       </aside>
-     
-        <!-- Conteúdo principal com margem para o menu -->
-        <main class="flex-1 p-6 overflow-auto rounded-lg mr-4 ml-4 border " style="height: 90vh">
-            <p>Conteúdo da sua página principal.</p>
-            <p-card header="Teste de Componente">
-                Este card do PrimeNG também mudará de cor com o tema.
-            </p-card>
-            <router-outlet></router-outlet>
-        </main>
-    </div>
-    
-
+    <!-- Conteúdo principal com margem para o menu -->
+    <main class="flex-1 p-6 overflow-auto rounded-lg mr-4 ml-4">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
 </div>
