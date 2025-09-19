@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CommonModule, NgClass } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { LayoutService } from '../../../services/layout-service';
 import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterModule, NgClass, TooltipModule],
+  imports: [CommonModule, RouterModule, TooltipModule],
   templateUrl: './sidebar.html',
 })
 export class Sidebar {

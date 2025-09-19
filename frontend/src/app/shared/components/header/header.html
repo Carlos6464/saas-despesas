@@ -1,18 +1,14 @@
 <header class="p-4 flex justify-between items-center">
-  <div class="flex items-center gap-2">
-    <!-- Botão Hambúrguer (só aparece em telas grandes, a partir de 'lg') -->
+  <div class="flex items-center">
     <button
       pButton
       icon="pi pi-bars"
       (click)="layoutService.toggleSidebar()"
-      class="p-button-text hidden lg:block"
-    >
-      <!-- Escondido por padrão, aparece em 'lg' -->
-    </button>
+      class="p-button-text hidden lg:block !w-10 !h-10"
+    ></button>
   </div>
 
   <div class="flex items-center gap-4">
-    <!-- Popover do Usuário (código existente) -->
     <p-avatar
       icon="pi pi-user"
       styleClass="cursor-pointer"
