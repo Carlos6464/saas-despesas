@@ -1,52 +1,45 @@
 <div
-  class="flex flex-col justify-between rounded-lg w-65 shadow-xl/60 h-screen p-4"
+  class="lg:hidden fixed bottom-0 left-0 right-0 bg-surface-card border-t border-surface-border shadow-lg z-40"
 >
-  <ul class="mt-6 space-y-1">
-    @for (item of items; track $index) { @if (!item.items) {
+  <ul class="flex justify-around items-center h-16">
+    @for (item of items; track $index) {
     <li>
       <a
-        [routerLink]="item['link']"
-        routerLinkActive="bg-primary-500/10 text-primary-500"
+        [routerLink]="item.link"
+        routerLinkActive="text-primary-500"
         [routerLinkActiveOptions]="{ exact: true }"
-        class="flex items-center gap-2 rounded-lg px-4 py-2 text-text-secondary hover:bg-surface-hover"
+        class="flex flex-col items-center justify-center gap-1 text-text-secondary w-20 h-16 transition-colors"
       >
-        <i [class]="item.icon + ' text-lg'"></i>
-        <span class="text-sm font-medium">{{ item.label }}</span>
+        <i [class]="item.icon + ' text-xl'"></i>
+        <span class="text-xs font-medium">{{ item.label }}</span>
       </a>
     </li>
-    } @else {
+    }
+  </ul>
+</div>
+
+<div
+  class="hidden lg:flex flex-col justify-between h-full p-4 bg-surface-card rounded-lg shadow-xl/60"
+>
+  <ul class="mt-4 space-y-2">
+    @for (item of items; track $index) {
     <li>
-      <details class="group [&_summary::-webkit-details-marker]:hidden">
-        <summary
-          class="flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-text-secondary hover:bg-surface-hover"
+      <a
+        [routerLink]="item.link"
+        routerLinkActive="bg-primary-500/10 text-primary-500"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="flex items-center gap-2 rounded-md p-3 me-1 text-text-secondary hover:bg-surface-hover transition-colors"
+        [pTooltip]="isCollapsed() ? item.label : ''"
+        tooltipPosition="right"
+      >
+        <i [class]="item.icon + ' text-xl'"></i>
+        <span
+          class="font-semibold transition-opacity duration-200"
+          [class.opacity-0]="isCollapsed()"
+          >{{ item.label }}</span
         >
-          <span class="flex items-center gap-2">
-            <i [class]="item.icon + ' text-lg'"></i>
-            <span class="text-sm font-medium">{{ item.label }}</span>
-          </span>
-
-          <span class="shrink-0 transition duration-300 group-open:-rotate-180">
-            <i class="pi pi-chevron-down text-xs"></i>
-          </span>
-        </summary>
-
-        <ul class="mt-2 space-y-1 px-4">
-          @for (subItem of item.items; track $index) {
-          <li>
-            <a
-              [routerLink]="subItem['link']"
-              routerLinkActive="bg-primary-500/10 text-primary-500"
-              [routerLinkActiveOptions]="{ exact: true }"
-              class="flex items-center gap-2 rounded-lg px-4 py-2 text-text-secondary hover:bg-surface-hover"
-            >
-              <i [class]="subItem.icon + ' text-lg'"></i>
-              <span class="text-sm font-medium">{{ subItem.label }}</span>
-            </a>
-          </li>
-          }
-        </ul>
-      </details>
+      </a>
     </li>
-    } }
+    }
   </ul>
 </div>

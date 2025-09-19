@@ -1,7 +1,18 @@
 <header class="p-4 flex justify-between items-center">
-  <h1 class="text-xl font-bold text-primary">Despesas</h1>
+  <div class="flex items-center gap-2">
+    <!-- Botão Hambúrguer (só aparece em telas grandes, a partir de 'lg') -->
+    <button
+      pButton
+      icon="pi pi-bars"
+      (click)="layoutService.toggleSidebar()"
+      class="p-button-text hidden lg:block"
+    >
+      <!-- Escondido por padrão, aparece em 'lg' -->
+    </button>
+  </div>
 
   <div class="flex items-center gap-4">
+    <!-- Popover do Usuário (código existente) -->
     <p-avatar
       icon="pi pi-user"
       styleClass="cursor-pointer"
@@ -9,27 +20,26 @@
       (click)="op.toggle($event)"
     >
     </p-avatar>
-
     <p-popover #op>
-      <ul class="list-none p-0 m-0 flex flex-col gap-2 w-48">
+      <ul class="list-none p-0 m-0 flex flex-col gap-1 w-48">
         <li>
           <a
             [routerLink]="['/app/perfil']"
             pRipple
-            class="flex items-center rounded-md transition-colors duration-200 hover:bg-surface-hover"
+            class="flex items-center p-3 rounded-md transition-colors duration-200 hover:bg-surface-hover"
           >
             <i class="pi pi-user mr-2"></i>
             <span class="font-medium">Perfil</span>
           </a>
         </li>
         <li>
-          <hr class="border-gray-200 dark:border-gray-800" />
+          <hr class="my-1 border-gray-200 dark:border-gray-800" />
         </li>
         <li>
           <a
             (click)="logout()"
             pRipple
-            class="flex items-center rounded-md transition-colors duration-200 hover:bg-surface-hover cursor-pointer"
+            class="flex items-center p-3 rounded-md transition-colors duration-200 hover:bg-surface-hover cursor-pointer"
           >
             <i class="pi pi-sign-out mr-2"></i>
             <span class="font-medium">Sair</span>
