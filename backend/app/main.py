@@ -1,14 +1,12 @@
 # app/main.py
 from fastapi import FastAPI
-# 1. Importe o CORSMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.db.base import Base
 from app.db.database import engine
 from app.api.v1 import user_router, auth_router, category_router, admin_router, expense_router
 
-# Esta linha cria a tabela "users" no seu banco de dados se ela não existir
-Base.metadata.create_all(bind=engine)
+# ... resto do seu código ...
 
 app = FastAPI(
     title="Expense Tracker API",
@@ -16,24 +14,23 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# 2. Defina as origens permitidas
-# O "*" permite que qualquer origem acesse sua API.
-origins = ["*"]
+# Altere esta linha para ser mais específica
+# Em vez de ["*"], liste os domínios permitidos
+origins = [
+    "http://localhost:4200",
+]
 
-# 3. Adicione o Middleware de CORS ao seu aplicativo
+# Adicione o Middleware de CORS ao seu aplicativo
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=origins, # Use a lista de origens que acabamos de criar
     allow_credentials=True,
-    allow_methods=["*"],  # Permite todos os métodos (GET, POST, etc.)
-    allow_headers=["*"],  # Permite todos os cabeçalhos
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# Inclui os roteadores da API (V1)
-# Adiciona o novo roteador de admin
+# ... resto dos seus 'app.include_router' ...
 app.include_router(admin_router.router, prefix="/api/v1")
-
-# Adiciona as rotas comuns
 app.include_router(auth_router.router, prefix="/api/v1")
 app.include_router(user_router.router, prefix="/api/v1")
 app.include_router(category_router.router, prefix="/api/v1")
