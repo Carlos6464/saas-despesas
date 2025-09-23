@@ -15,6 +15,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { MessageService } from 'primeng/api'; // Para exibir mensagens de erro
 import { ToastModule } from 'primeng/toast'; // Módulo do Toast
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-login',
@@ -40,10 +41,15 @@ export class Login implements OnInit {
     private fb: FormBuilder,
     private loginService: LoginService,
     private router: Router,
-    private messageService: MessageService // Injeta o serviço de mensagens
+    private messageService: MessageService, // Injeta o serviço de mensagens
+    private auth: Auth
   ) {}
 
   ngOnInit(): void {
+    if (this.auth.isAuthenticated()) {
+      this.router.navigate(['/app/dashboard']);
+    }
+
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],

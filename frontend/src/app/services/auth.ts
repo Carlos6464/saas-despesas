@@ -1,11 +1,13 @@
 import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { User } from '../shared/models/user.model'; // Importe a nova interface
 
 @Injectable({
   providedIn: 'root',
 })
 export class Auth {
   private readonly TOKEN_KEY = 'access_token';
+  private readonly USER_KEY = 'current_user'; // Nova chave para o usuário
   private isBrowser: boolean;
 
   constructor(@Inject(PLATFORM_ID) platformId: Object) {
@@ -14,7 +16,6 @@ export class Auth {
 
   /**
    * Salva o token de acesso no localStorage.
-   * @param token O token JWT recebido da API.
    */
   saveToken(token: string): void {
     if (this.isBrowser) {
@@ -24,7 +25,6 @@ export class Auth {
 
   /**
    * Recupera o token de acesso do localStorage.
-   * @returns O token JWT ou null se não existir.
    */
   getToken(): string | null {
     if (this.isBrowser) {
@@ -34,20 +34,48 @@ export class Auth {
   }
 
   /**
-   * Remove o token do localStorage (efetua o logout no lado do cliente).
+   * NOVO: Salva o objeto do usuário no localStorage.
+   * O objeto é convertido para uma string JSON antes de ser salvo.
+   */
+  saveUser(user: User): void {
+    if (this.isBrowser) {
+      localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+    }
+  }
+
+  /**
+   * NOVO: Recupera o objeto do usuário do localStorage.
+   * A string JSON é convertida de volta para um objeto.
+   */
+  getUser(): User | null {
+    if (this.isBrowser) {
+      const userString = localStorage.getItem(this.USER_KEY);
+      if (userString) {
+        try {
+          return JSON.parse(userString) as User;
+        } catch (e) {
+          console.error('Erro ao parsear dados do usuário do localStorage', e);
+          return null;
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * ATUALIZADO: Remove o token E o usuário do localStorage.
    */
   logout(): void {
     if (this.isBrowser) {
       localStorage.removeItem(this.TOKEN_KEY);
+      localStorage.removeItem(this.USER_KEY); // Limpa também o usuário
     }
   }
 
   /**
    * Verifica se o usuário possui um token armazenado.
-   * @returns True se o token existir, false caso contrário.
    */
   isAuthenticated(): boolean {
-    // A dupla negação (!!) transforma o valor (string ou null) em um booleano.
     return !!this.getToken();
   }
 }

@@ -5,12 +5,13 @@ import {
   Inject,
   OnInit,
 } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 
 // Imports dos componentes PrimeNG para o botão flutuante
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
+import { Auth } from './services/auth';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +26,9 @@ export class App implements OnInit {
 
   constructor(
     private renderer: Renderer2,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private auth: Auth,
+    private router: Router
   ) {}
 
   ngOnInit() {

@@ -2,40 +2,54 @@ import { Routes } from '@angular/router';
 import { AuthLayout } from './layouts/auth-layout/auth-layout';
 import { PublicLayout } from './layouts/public-layout/public-layout';
 import { Login } from './pages/login/login';
-import { Dashboard } from './pages/dashboard/dashboard'; // Importe o Dashboard
-import { Cadastro } from './pages/login/cadastro/cadastro'; // Importe o Cadastro
-
+import { Dashboard } from './pages/dashboard/dashboard';
+import { Cadastro } from './pages/login/cadastro/cadastro';
 import { Categoria } from './pages/categoria/categoria';
 import { Despesa } from './pages/despesa/despesa';
+import { Adicionar as CategoriaAdicionar } from './pages/categoria/adicionar/adicionar';
+
+import { InvalidoComponent } from './pages/invalido/invalido.component';
+
+// Importe o AuthGuard que acabamos de criar
+import { authGuard } from '../guard/auth.guard';
 
 export const routes: Routes = [
-  // 1. Redireciona a rota raiz ('') para '/login'
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-
-  // 2. Agrupa as rotas públicas sob o PublicLayout
+  // --- ROTAS PÚBLICAS ---
+  // Acessíveis sem login, renderizadas dentro do PublicLayout (um layout simples)
   {
     path: '',
-    component: PublicLayout, // Layout sem sidebar/header
+    component: PublicLayout,
     children: [
+      { path: '', redirectTo: 'login', pathMatch: 'full' },
       { path: 'login', component: Login },
       { path: 'cadastro', component: Cadastro },
-      // Outras rotas públicas, como 'esqueci-senha', iriam aqui
+      { path: 'invalido/:code', component: InvalidoComponent },
     ],
   },
 
-  // 3. Agrupa as rotas protegidas sob o AuthLayout com um prefixo 'app'
+  // --- ROTAS PROTEGIDAS ---
   {
-    path: 'app', // Todas as rotas aqui dentro começarão com /app/...
-    component: AuthLayout, // Layout com sidebar/header
-    // Futuramente, você adicionará um 'canActivate' aqui para proteger estas rotas
+    path: 'app',
+    component: AuthLayout,
+    canActivate: [authGuard], // A MÁGICA ACONTECE AQUI!
     children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: Dashboard },
-      { path: 'categorias', component: Categoria }, // Exemplo de rota protegida
+
+      // Rotas de Categoria aninhadas
+      {
+        path: 'categorias',
+        children: [
+          { path: '', component: Categoria }, // Rota principal: /app/categorias
+          { path: 'adicionar', component: CategoriaAdicionar }, // Rota: /app/categorias/adicionar
+          { path: 'editar/:id', component: CategoriaAdicionar }, // Rota: /app/categorias/editar/123
+        ],
+      },
+
       { path: 'despesas', component: Despesa },
-      // Exemplo: { path: 'categorias', component: Categoria },
     ],
   },
 
-  // 4. Rota de fallback: se o usuário digitar uma URL inválida, ele é enviado para o login
-  { path: '**', redirectTo: 'login' },
+  // Rota de fallback: se o usuário digitar algo que não existe, volta para o login
+  { path: '**', redirectTo: 'invalido/404' },
 ];

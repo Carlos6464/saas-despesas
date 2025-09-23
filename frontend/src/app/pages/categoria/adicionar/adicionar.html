@@ -1,1 +1,34 @@
-<p>adicionar works!</p>
+<div>
+  <app-page-header
+    [breadcrumbItems]="breadcrumbItems"
+    [buttons]="headerButtons"
+  ></app-page-header>
+
+  <div class="w-full max-w-2xl">
+    <p-card>
+      <form #form="ngForm" (ngSubmit)="onSubmit(form)">
+        <div class="flex flex-wrap gap-4 items-center">
+          <div class="flex-auto mb-3">
+            <app-form-input
+              label="Nome"
+              name="nome"
+              [(ngModel)]="Form.name"
+              [required]="true"
+            >
+            </app-form-input>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <p-button
+            label="Salvar"
+            type="submit"
+            [loading]="isLoading"
+          ></p-button>
+        </div>
+      </form>
+
+      <p-toast />
+    </p-card>
+  </div>
+</div>

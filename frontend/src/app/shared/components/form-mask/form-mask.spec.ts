@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Adicionar } from './adicionar';
+import { FormMask } from './form-mask';
 
-describe('Adicionar', () => {
-  let component: Adicionar;
-  let fixture: ComponentFixture<Adicionar>;
+describe('FormMask', () => {
+  let component: FormMask;
+  let fixture: ComponentFixture<FormMask>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Adicionar]
+      imports: [FormMask]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Adicionar);
+    fixture = TestBed.createComponent(FormMask);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

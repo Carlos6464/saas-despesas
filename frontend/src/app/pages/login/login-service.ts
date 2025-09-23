@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { Auth } from '../../services/auth';
 import { Http } from '../../services/http';
+import { User } from '../../shared/models/user.model';
 
 interface LoginCredentials {
   username: string;
@@ -11,6 +12,7 @@ interface LoginCredentials {
 interface LoginResponse {
   access_token: string;
   token_type: string;
+  user: User;
 }
 
 @Injectable({
@@ -31,9 +33,8 @@ export class LoginService {
       .postUrlEncoded<LoginResponse>(this.loginEndpoint, credentials)
       .pipe(
         tap((response) => {
-          if (response.access_token) {
-            this.authService.saveToken(response.access_token);
-          }
+          this.authService.saveToken(response.access_token);
+          this.authService.saveUser(response.user);
         })
       );
   }
