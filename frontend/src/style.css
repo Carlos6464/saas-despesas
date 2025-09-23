@@ -2,8 +2,6 @@
 @import "tailwindcss";
 @import "primeicons/primeicons.css";
 
-/* --- CONFIGURAÇÃO DE CORES --- */
-
 /* 1. MODO CLARO (padrão) */
 :root {
   /* Cores primárias sincronizadas com as variáveis do tema PrimeNG */
