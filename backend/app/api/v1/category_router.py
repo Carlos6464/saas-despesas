@@ -1,12 +1,12 @@
 # app/api/v1/category_router.py
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 
 from app.db.database import get_db
 from app.core.security import get_current_user
 from app.services.category_service import CategoryService
-from app.schemas.category_schema import CategoryCreate, CategoryUpdate, CategoryPublic
+from app.schemas.category_schema import CategoryCreate, CategoryUpdate, CategoryPublic, CategoryListPublic
 from app.models.user_model import User
 
 router = APIRouter(prefix="/categories", tags=["Categories"])
@@ -23,18 +23,23 @@ def create_category(
     service = CategoryService(db)
     return service.create_category_for_user(category_data=category, current_user=current_user)
 
-@router.get("/", response_model=List[CategoryPublic])
+@router.get("/", response_model=CategoryListPublic)
 def read_categories(
+    name: Optional[str] = None, # Parâmetro de filtro exposto na API
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
     """
-    Retorna uma lista de todas as categorias pertencentes ao usuário autenticado e todas as categorias públicas.
+    Retorna uma lista paginada de categorias do usuário e públicas.
+    Inclui o número total de registros e pode ser filtrada por nome.
     """
     service = CategoryService(db)
-    return service.get_categories_for_user_and_public(current_user=current_user, skip=skip, limit=limit)
+    # Passa o 'name' recebido da URL para o serviço
+    return service.get_categories_for_user_and_public(
+        current_user=current_user, name=name, skip=skip, limit=limit
+    )
 
 @router.get("/{category_id}", response_model=CategoryPublic)
 def read_category(

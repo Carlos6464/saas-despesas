@@ -1,7 +1,7 @@
 # app/services/category_service.py
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
-from typing import List
+from typing import List, Optional
 
 from app.repositories.category_repository import CategoryRepository
 from app.schemas.category_schema import CategoryCreate, CategoryUpdate
@@ -35,10 +35,13 @@ class CategoryService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Categoria não encontrada."
             )
-        if category.user_id != current_user.id:
+        is_owner = category.user_id == current_user.id
+        is_public = category.user_id is None
+        
+        if not (current_user.is_admin or is_public or is_owner):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Você não tem permissão para acessar este recurso."
+                detail="Você não tem permissão para aceder a este recurso."
             )
         return category
 
@@ -48,13 +51,18 @@ class CategoryService:
         """
         return self.repository.get_by_user_id(user_id=current_user.id, skip=skip, limit=limit)
     
-    def get_categories_for_user_and_public( self, current_user: User, skip: int = 0, limit: int = 100):
+    def get_categories_for_user_and_public(
+        self, current_user: User, name: Optional[str] = None, skip: int = 0, limit: int = 100
+    ):
         """
         Retorna uma lista de categorias que:
-        1. Pertencem ao usuário atual.
-        2. São públicas (user_id é NULL).
+        1. Pertencem ao usuário atual OU são públicas.
+        2. (Opcional) São filtradas por nome.
         """
-        return self.repository.get_categories_for_user_and_public(user_id=current_user.id, skip=skip, limit=limit)
+        # Repassa o parâmetro 'name' para o repositório
+        return self.repository.get_categories_for_user_and_public(
+            user_id=current_user.id, name=name, skip=skip, limit=limit
+        )
 
 
     def update_category(self, category_id: int, category_data: CategoryUpdate, current_user: User):

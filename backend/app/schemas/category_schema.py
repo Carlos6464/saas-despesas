@@ -1,35 +1,50 @@
 # app/schemas/category_schema.py
-from pydantic import BaseModel
-from typing import Optional
+from pydantic import BaseModel, computed_field
+from typing import Optional, List
 from datetime import datetime
 from .user_schema import UserPublic 
 
 # --- Schema Base ---
-# Contém os campos comuns a todos os outros schemas para evitar repetição.
 class CategoryBase(BaseModel):
     name: str
+    user_id: Optional[int] = None
 
 # --- Schema para Criação ---
-# Usado para validar os dados ao criar uma nova categoria.
-# Herda de CategoryBase, pois para criar, só precisamos do nome.
 class CategoryCreate(CategoryBase):
     pass
 
 # --- Schema para Atualização ---
-# Usado ao atualizar uma categoria. Todos os campos são opcionais.
 class CategoryUpdate(BaseModel):
     name: Optional[str] = None
+    user_id: Optional[int] = None
 
 # --- Schema para Exibição (Público) ---
-# Define os campos que serão retornados pela API.
-# Herda de CategoryBase e adiciona os campos que são gerados pelo banco de dados.
 class CategoryPublic(CategoryBase):
     id: int
     user_id: Optional[int] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
-
     owner: Optional[UserPublic] = None
 
+    # --- CAMPO COMPUTADO PARA A DATA DE CRIAÇÃO ---
+    @computed_field
+    @property
+    def created_at_formatted(self) -> str:
+        """Retorna a data de criação formatada como DD/MM/YYYY HH:MM."""
+        return self.created_at.strftime("%d/%m/%Y %H:%M")
+
+    # --- CAMPO COMPUTADO PARA A DATA DE ATUALIZAÇÃO ---
+    @computed_field
+    @property
+    def updated_at_formatted(self) -> Optional[str]:
+        """Retorna a data de atualização formatada, se existir."""
+        if self.updated_at:
+            return self.updated_at.strftime("%d/%m/%Y %H:%M")
+        return None
+
     class Config:
-        from_attributes = True # Permite que o Pydantic leia dados de objetos SQLAlchemy
+        from_attributes = True
+        
+class CategoryListPublic(BaseModel):
+    data: List[CategoryPublic]
+    total: int

@@ -1,8 +1,7 @@
 # app/repositories/category_repository.py
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import or_
-from typing import List, Optional
-
+from typing import List, Optional, Dict, Any
 from app.models.category_model import Category
 from app.schemas.category_schema import CategoryCreate, CategoryUpdate
 
@@ -44,25 +43,35 @@ class CategoryRepository:
             .all()
         )
     
-    def get_categories_for_user_and_public( self, user_id: int, skip: int = 0, limit: int = 100) -> List[Category]:
+    def get_categories_for_user_and_public(
+        self, user_id: int, name: Optional[str] = None, skip: int = 0, limit: int = 100
+    ) -> Dict[str, Any]: # O tipo de retorno agora é um dicionário
         """
-        Busca no banco de dados as categorias que:
-        1. Pertencem ao usuário atual.
-        2. São públicas (user_id é NULL).
+        Busca categorias com paginação e retorna os dados junto com o total.
         """
-        return (
+        # Constrói a query base com os filtros
+        query = (
             self.db.query(Category)
-            .options(joinedload(Category.owner))  
+            .options(joinedload(Category.owner))
             .filter(
                 or_(
                     Category.user_id == user_id,
                     Category.user_id == None
                 )
             )
-            .offset(skip)
-            .limit(limit)
-            .all()
         )
+
+        if name:
+            query = query.filter(Category.name.ilike(f"%{name}%"))
+
+        # 1. Conta o número total de itens que correspondem à query (antes da paginação)
+        total = query.count()
+
+        # 2. Aplica a paginação e busca os dados da página atual
+        data = query.offset(skip).limit(limit).all()
+
+        # 3. Retorna um dicionário com os dados e o total
+        return {"data": data, "total": total}
 
     def update(self, category_id: int, category_data: CategoryUpdate) -> Optional[Category]:
         db_category = self.get_by_id(category_id)
