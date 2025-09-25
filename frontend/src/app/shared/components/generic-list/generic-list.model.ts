@@ -36,4 +36,6 @@ export interface ActionDefinition {
   icon: string; // Ícone do Font Awesome (ex: 'fa-solid fa-pen')
   tooltip: string; // Dica de ferramenta (ex: 'Editar')
   severity: ActionSeverity; // Cor do botão
+  disabled?: (item: any) => boolean;
+  disabledTooltip?: string;
 }

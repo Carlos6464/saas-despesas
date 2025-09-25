@@ -27,7 +27,6 @@ export const routes: Routes = [
     ],
   },
 
-  // --- ROTAS PROTEGIDAS ---
   {
     path: 'app',
     component: AuthLayout,

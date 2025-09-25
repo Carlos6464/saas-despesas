@@ -150,8 +150,29 @@ export class Categoria implements OnInit {
   private setupListComponent(): void {
     this.listColumns = [
       { field: 'name', header: 'Nome' },
+      {
+        field: 'user_id', // O campo que será avaliado para a lógica
+        header: 'Tipo', // O nome da coluna na tabela
+        type: 'badge', // Diz ao GenericList para renderizar como um <p-badge>
+        badgeConfig: {
+          // Se o valor de 'user_id' for 'falsy' (como null), use estas configurações
+          falseValue: 'Global',
+          falseSeverity: 'info', // Cores do PrimeNG: 'success', 'info', 'warning', 'danger'
+
+          // Se o valor de 'user_id' for 'truthy' (como um número), use estas
+          trueValue: 'Pessoal',
+          trueSeverity: 'success',
+        },
+      },
       { field: 'created_at_formatted', header: 'Data de Cadastro' },
     ];
+
+    const isActionDisabled = (item: CategoriaModel): boolean => {
+      // Retorna TRUE (desabilitado) se o usuário NÃO for admin E a categoria for global (user_id é null)
+      return !this.authService.isSuperAdmin() && item.user_id === null;
+    };
+    const disabledTooltipText =
+      'Apenas administradores podem alterar categorias globais';
 
     this.listActions = [
       {
@@ -159,12 +180,16 @@ export class Categoria implements OnInit {
         icon: 'fa-solid fa-pen',
         tooltip: 'Editar',
         severity: 'primary',
+        disabled: isActionDisabled,
+        disabledTooltip: disabledTooltipText,
       },
       {
         actionId: 'delete',
         icon: 'fa-solid fa-trash',
         tooltip: 'Deletar',
         severity: 'danger',
+        disabled: isActionDisabled,
+        disabledTooltip: disabledTooltipText,
       },
     ];
   }

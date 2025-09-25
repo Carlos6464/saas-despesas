@@ -59,9 +59,10 @@
             [rounded]="true"
             [text]="true"
             [severity]="$any(action.severity)"
-            [pTooltip]="action.tooltip"
+            [pTooltip]="getActionTooltip(action, item)"
             tooltipPosition="top"
             (click)="emitAction(action, item)"
+            [disabled]="isActionDisabled(action, item)"
           />
           }
         </td>

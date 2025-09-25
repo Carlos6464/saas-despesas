@@ -78,4 +78,17 @@ export class Auth {
   isAuthenticated(): boolean {
     return !!this.getToken();
   }
+
+  /**
+   * Retorna true se o usuário estiver logado e sua propriedade 'is_admin' for verdadeira.
+   * @returns {boolean}
+   */
+  isSuperAdmin(): boolean {
+    //-- Recupera o objeto do usuário usando o método que você já tem.
+    const user = this.getUser();
+
+    //-- Verifica se o objeto 'user' não é nulo e se a propriedade 'is_admin' é true.
+    // O '!!' garante que o retorno seja sempre um booleano (true ou false).
+    return !!(user && user.is_admin);
+  }
 }

@@ -3,6 +3,7 @@ import { User } from '../../shared/models/user.model';
 export interface Categoria {
   name: string;
   id: number;
+  user_id?: number | null;
   createdAt?: string | null;
   updatedAt?: string | null;
   created_at_formatted?: string | null;

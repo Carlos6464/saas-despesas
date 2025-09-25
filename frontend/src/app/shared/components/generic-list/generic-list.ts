@@ -72,4 +72,34 @@ export class GenericList {
   resolveNestedValue(obj: any, path: string): any {
     return path.split('.').reduce((p, c) => (p && p[c] ? p[c] : ''), obj);
   }
+
+  /**
+   * NOVO: Verifica se uma ação específica deve estar desabilitada para um determinado item.
+   * @param action A definição da ação.
+   * @param item O objeto de dados da linha.
+   * @returns {boolean} True se a ação deve ser desabilitada.
+   */
+  isActionDisabled(action: ActionDefinition, item: any): boolean {
+    // Se a função 'disabled' existe na definição da ação, chame-a com o item.
+    if (action.disabled) {
+      return action.disabled(item);
+    }
+    // Caso contrário, a ação nunca está desabilitada.
+    return false;
+  }
+
+  /**
+   * NOVO: Retorna o texto do tooltip apropriado com base no estado da ação.
+   * @param action A definição da ação.
+   * @param item O objeto de dados da linha.
+   * @returns {string} O texto do tooltip a ser exibido.
+   */
+  getActionTooltip(action: ActionDefinition, item: any): string {
+    // Verifica se a ação está desabilitada E se existe um tooltip alternativo
+    if (this.isActionDisabled(action, item) && action.disabledTooltip) {
+      return action.disabledTooltip;
+    }
+    // Caso contrário, retorna o tooltip padrão
+    return action.tooltip;
+  }
 }
